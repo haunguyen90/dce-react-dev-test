@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import { Button, Modal, Card, ListGroup } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Scrollbars } from 'react-custom-scrollbars';
@@ -6,12 +6,15 @@ import InfiniteScroll from 'react-infinite-scroller';
 import { map, debounce } from 'lodash';
 
 import ContactSelectors from '../redux/contacts/contacts.selectors';
+import ModalSelectors from '../redux/modal/modal.selectors';
 import { fetchContactByPage, searchContact, evenCheckbox } from '../redux/contacts/contact.slice';
 
 import ContactItem from './ContactItem';
 
-const ModalA = ({ handleModalC, handleClose, show }) => { 
+const ModalAB = ({ handleModalC, handleClose, handleShow }) => { 
   const dispatch = useDispatch();
+
+  const modalName = useSelector(ModalSelectors.getOpenedModalName);
   const contacts = useSelector(ContactSelectors.getContactList);
   const evenCheck = useSelector(state => state.contacts.evenCheck);
   const isFetching = useSelector(state => state.contacts.isFetching);
@@ -20,8 +23,15 @@ const ModalA = ({ handleModalC, handleClose, show }) => {
   const query = useSelector(state => state.contacts.query);
 
   useEffect(() => {
-    dispatch(fetchContactByPage({ page: 1 }))
-  }, []);
+    const payload = {
+      page: 1,
+    };
+    if (modalName === 'b') {
+      payload.countryId = 226;
+    };
+
+    dispatch(fetchContactByPage(payload))
+  }, [modalName, dispatch]);
 
   const handleEvenCheck = (e) => {
     dispatch(evenCheckbox(!evenCheck));
@@ -31,7 +41,14 @@ const ModalA = ({ handleModalC, handleClose, show }) => {
     if (isFetching || Object.keys(contacts).length === 0 || query.email) {
       return;
     }
-    dispatch(fetchContactByPage({ page: page + 1 }))
+    const payload = {
+      page: page + 1,
+    };
+    if (modalName === 'b') {
+      payload.countryId = 226;
+    };
+
+    dispatch(fetchContactByPage(payload));
   };
 
   const renderContacts = () => {
@@ -58,7 +75,7 @@ const ModalA = ({ handleModalC, handleClose, show }) => {
 
   const debouncedSearch = (query) => {
     const searchContactQuery = () => dispatch(searchContact(query));
-    return debounce(searchContactQuery, 300);
+    return debounce(searchContactQuery, 500);
   }
 
   const onHandleSearch = (e) => {
@@ -81,15 +98,21 @@ const ModalA = ({ handleModalC, handleClose, show }) => {
       centered
     >
         <Modal.Header closeButton>
-          <Modal.Title>Modal A</Modal.Title>
+          <Modal.Title>Modal {modalName.toLocaleUpperCase()}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="row h-100 justify-content-around align-items-center">
-            <Button className="button-a">
+            <Button
+              className="button-a"
+              onClick={(e) => handleShow('a')}
+            >
               All Contacts
             </Button>
 
-            <Button className="button-b">
+            <Button
+              className="button-b"
+              onClick={(e) => handleShow('b')}
+            >
               US Contacts
             </Button>
 
@@ -99,7 +122,7 @@ const ModalA = ({ handleModalC, handleClose, show }) => {
           </div>
 
           <div className="row h-100 justify-content-around align-items-center">
-            <div className="input-group">
+            <div className="input-group search-group">
               <input onChange={onHandleSearch} type="search" className="form-control rounded" placeholder="Search Email" aria-label="Search" aria-describedby="search-addon" />
               <button type="button" className="btn btn-primary">Search</button>
             </div>
@@ -135,4 +158,4 @@ const ModalA = ({ handleModalC, handleClose, show }) => {
   );
 }
 
-export default ModalA;
+export default ModalAB;

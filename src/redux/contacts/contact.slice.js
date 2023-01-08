@@ -36,6 +36,10 @@ export const contactSlice = createSlice({
         total: action.payload.total,
       };
     },
+    flushContacts: (state, action) => ({
+      ...state,
+      contacts: {},
+    }),
     selectContactId: (state, action) => ({
       ...state,
       selectedContactId: action.payload,
@@ -53,6 +57,7 @@ export const {
   selectContactId,
   evenCheckbox,
   searchContact,
+  flushContacts,
 } = contactSlice.actions;
 export const selectContacts = (state) => state.contacts;
 

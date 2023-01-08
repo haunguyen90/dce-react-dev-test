@@ -1,9 +1,8 @@
-import { all, call, put, takeLatest } from 'redux-saga/effects';
+import { all, call, put, takeLatest, select } from 'redux-saga/effects';
 
 import APIService from '../../utils/api.service';
-
-// import { CONTACT_ACTIONS, fetchContactAsync } from './contact.actions';
-import { fetchContactByPage, addContacts, searchContact } from './contact.slice';
+import { fetchContactByPage, addContacts, searchContact, flushContacts } from './contact.slice';
+import { setOpenModalName } from '../modal/modal.slice';
 
 export const fetchContactAPI = (params) => {
   return APIService.get('/contacts.json', { params });
@@ -11,13 +10,12 @@ export const fetchContactAPI = (params) => {
 
 export function* fetchContactSaga({ payload }) {
   const params = {
+    ...payload,
     companyId: 171,
-    page: payload.page || 0,
-    query: payload.query || {},
   }
+  
   try {
     const result = yield call(fetchContactAPI, params);
-    console.log('result', result);
     if (result && result.data?.contacts) {
       const data = {
         contacts: result.data.contacts,
@@ -30,9 +28,15 @@ export function* fetchContactSaga({ payload }) {
   }
 }
 
+export function* flushContactSaga() {
+  console.log('flushContactSaga');
+  yield put(flushContacts());
+}
+
 export default function* contactSaga() {
 	yield all([
 		takeLatest(fetchContactByPage, fetchContactSaga),
     takeLatest(searchContact, fetchContactSaga),
+    takeLatest(setOpenModalName, flushContactSaga),
 	]);
 }
