@@ -51,15 +51,15 @@ const ModalA = ({ handleModalC, handleClose, show }) => {
         </Modal.Header>
         <Modal.Body>
           <div className="row h-100 justify-content-around align-items-center">
-            <Button variant="primary">
+            <Button className="button-a">
               All Contacts
             </Button>
 
-            <Button variant="primary">
+            <Button className="button-b">
               US Contacts
             </Button>
 
-            <Button variant="secondary" onClick={handleClose}>
+            <Button className="button-c" onClick={handleClose}>
               Close
             </Button>
           </div>

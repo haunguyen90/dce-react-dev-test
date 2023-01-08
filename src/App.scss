@@ -7,14 +7,6 @@ body,html, #root{
 .App {
   height: 100%;
   text-align: center;
-
-  .button-b {
-    margin-left: 5px;
-  }
-
-  .button-a {
-    margin-right: 5px;
-  }
 }
 
 .modal {
@@ -34,6 +26,54 @@ body,html, #root{
     }
   }
 }
+
+.btn {
+  color: #fff;
+
+  &:hover {
+    color: #fff;
+    opacity: 0.9;
+  }
+
+  &.button-a {
+    margin-right: 5px;
+    background-color: #46139f;
+    border-color: #46139f;
+  
+    &:active {
+      background-color: #46139f;
+      border-color: #46139f;
+    }
+  }
+
+  &.button-b {
+    margin-left: 5px;
+    background-color: #ff7f50;
+    border-color: #ff7f50;
+  
+    &:active {
+      background-color: #ff7f50;
+      border-color: #ff7f50;
+    }
+  }
+  
+  &.button-c {
+    color: black;
+    background-color: #fff;
+    border-color: #46139f;
+
+    &:active {
+      background-color: #fff;
+      border-color: #46139f;
+    }
+
+    &:hover {
+      color: black;
+      background-color: #efe6ff;
+    }
+  }
+}
+
 
 .App-logo {
   height: 40vmin;

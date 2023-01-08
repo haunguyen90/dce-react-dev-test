@@ -39,10 +39,10 @@ const App = () => {
     <div className="App">
       <div className="container h-100">
         <div className="row h-100 justify-content-center align-items-center">
-          <Button className="button-a" variant="primary" onClick={() => handleShow('modalA')}>
+          <Button className="button-a" onClick={() => handleShow('modalA')}>
             Button A
           </Button>
-          <Button className="button-b" variant="secondary">Button B</Button>
+          <Button className="button-b" >Button B</Button>
         </div>
         <Routes>
           <Route
