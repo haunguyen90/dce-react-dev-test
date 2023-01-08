@@ -21,7 +21,6 @@ export default class ContactSelectors {
   static getContactList = createSelector(
     [ContactSelectors.getContacts, ContactSelectors.getEvenChecked],
     (contacts, evenCheck) => {
-      console.log('change params', evenCheck);
       if (!evenCheck) return contacts;
       return filter(contacts, ({ id }) => isEvenNum(id));
     },

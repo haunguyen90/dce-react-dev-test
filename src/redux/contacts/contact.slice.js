@@ -16,19 +16,30 @@ export const getContact = (payload) => ({
 });
 
 const initialState = {
-  contacts: [],
+  contacts: {},
   selectedContactId: null,
   evenCheck: false,
+  isFetching: false,
+  error: null,
 };
 
 export const contactSlice = createSlice({
   name: 'CONTACTS',
   initialState,
   reducers: {
+    fetchContactByPage: (state, { payload }) => ({
+      ...state,
+      error: null,
+      isFetching: true,
+      page: payload.page,
+    }),
     addContacts: (state, action) => {
       return {
         ...state,
-        contacts: action.payload
+        error: null,
+        isFetching: false,
+        contacts: Object.assign({}, state.contacts, action.payload.contacts),
+        total: action.payload.total,
       };
     },
     selectContactId: (state, action) => ({
@@ -42,7 +53,12 @@ export const contactSlice = createSlice({
   }
 });
 
-export const { addContacts, selectContactId, evenCheckbox } = contactSlice.actions;
+export const {
+  fetchContactByPage,
+  addContacts,
+  selectContactId,
+  evenCheckbox,
+} = contactSlice.actions;
 export const selectContacts = (state) => state.contacts;
 
 export default contactSlice.reducer;
