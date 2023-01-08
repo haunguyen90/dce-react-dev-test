@@ -1,0 +1,83 @@
+@import "~bootstrap/scss/bootstrap";
+
+body,html, #root{
+  height:100%;
+}
+
+.App {
+  height: 100%;
+  text-align: center;
+}
+
+.modal {
+  .row {
+    margin-bottom: 15px;
+  }
+
+  .even-checkbox {
+    margin-left: 10px;
+
+    label {
+      margin-bottom: 0;
+
+      input[type="checkbox"] {
+        margin-right: 10px;
+      }
+    }
+  }
+
+  .loader {
+    text-align: center;
+  }
+
+  .search-group { 
+    padding: 0 15px;
+  }
+}
+
+.btn {
+  color: #fff;
+
+  &:hover {
+    color: #fff;
+    opacity: 0.9;
+  }
+
+  &.button-a {
+    margin-right: 5px;
+    background-color: #46139f;
+    border-color: #46139f;
+  
+    &:active {
+      background-color: #46139f;
+      border-color: #46139f;
+    }
+  }
+
+  &.button-b {
+    margin-left: 5px;
+    background-color: #ff7f50;
+    border-color: #ff7f50;
+  
+    &:active {
+      background-color: #ff7f50;
+      border-color: #ff7f50;
+    }
+  }
+  
+  &.button-c {
+    color: black;
+    background-color: #fff;
+    border-color: #46139f;
+
+    &:active {
+      background-color: #fff;
+      border-color: #46139f;
+    }
+
+    &:hover {
+      color: black;
+      background-color: #efe6ff;
+    }
+  }
+}
