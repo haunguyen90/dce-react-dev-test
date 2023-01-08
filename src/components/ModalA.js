@@ -3,10 +3,10 @@ import { Button, Modal, Card, ListGroup } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Scrollbars } from 'react-custom-scrollbars';
 import InfiniteScroll from 'react-infinite-scroller';
-import { map } from 'lodash';
+import { map, debounce } from 'lodash';
 
 import ContactSelectors from '../redux/contacts/contacts.selectors';
-import { fetchContactByPage, fetchContactAsync, evenCheckbox } from '../redux/contacts/contact.slice';
+import { fetchContactByPage, searchContact, evenCheckbox } from '../redux/contacts/contact.slice';
 
 import ContactItem from './ContactItem';
 
@@ -17,6 +17,7 @@ const ModalA = ({ handleModalC, handleClose, show }) => {
   const isFetching = useSelector(state => state.contacts.isFetching);
   const totalContacts = useSelector(state => state.contacts.total);
   const page = useSelector(state => state.contacts.page);
+  const query = useSelector(state => state.contacts.query);
 
   useEffect(() => {
     dispatch(fetchContactByPage({ page: 1 }))
@@ -27,7 +28,7 @@ const ModalA = ({ handleModalC, handleClose, show }) => {
   }
 
   const fetchMoreContacts = () => {
-    if (isFetching) {
+    if (isFetching || Object.keys(contacts).length === 0 || query.email) {
       return;
     }
     dispatch(fetchContactByPage({ page: page + 1 }))
@@ -38,7 +39,10 @@ const ModalA = ({ handleModalC, handleClose, show }) => {
       const props = {
         id: contact.id,
         email: contact.email,
-        country: contact.country.iso
+        country: contact.country.iso,
+        first_name: contact.first_name,
+        last_name: contact.last_name,
+        phone_number: contact.phone_number,
       }
       return (
         <ContactItem
@@ -50,7 +54,24 @@ const ModalA = ({ handleModalC, handleClose, show }) => {
     })
   }
 
-  const hasMoreContacts = () => Object.keys(contacts).length < totalContacts;
+  const hasMoreContacts = () => Object.keys(contacts).length < totalContacts;  
+
+  const debouncedSearch = (query) => {
+    const searchContactQuery = () => dispatch(searchContact(query));
+    return debounce(searchContactQuery, 300);
+  }
+
+  const onHandleSearch = (e) => {
+    e.preventDefault();
+    const query = {
+      email: e.target.value,
+    };
+    const debounced = debouncedSearch({ query })
+    debounced();
+
+  }
+
+  const loader = isFetching ? <div className="loader" key={0}>Loading ...</div> : null;
   
   return (
     <Modal
@@ -77,6 +98,13 @@ const ModalA = ({ handleModalC, handleClose, show }) => {
             </Button>
           </div>
 
+          <div className="row h-100 justify-content-around align-items-center">
+            <div className="input-group">
+              <input onChange={onHandleSearch} type="search" className="form-control rounded" placeholder="Search Email" aria-label="Search" aria-describedby="search-addon" />
+              <button type="button" className="btn btn-primary">Search</button>
+            </div>
+          </div>         
+
           <Card className='contact-list'>
             <Card.Header>Contact List</Card.Header>
             <ListGroup variant="flush">
@@ -85,7 +113,7 @@ const ModalA = ({ handleModalC, handleClose, show }) => {
                   pageStart={1}
                   loadMore={fetchMoreContacts}
                   hasMore={hasMoreContacts()}
-                  loader={<div className="loader" key={0}>Loading ...</div>}
+                  loader={loader}
                   useWindow={false}
                 >
                   {renderContacts()}
@@ -106,13 +134,5 @@ const ModalA = ({ handleModalC, handleClose, show }) => {
       </Modal>
   );
 }
-
-/** 
- * 
-   <Scrollbars className="scrollbars" style={{ height: 300 }}>
-                {renderContacts()}
-              </Scrollbars>
- * 
-*/
 
 export default ModalA;

@@ -1,26 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { createAction } from '@reduxjs/toolkit';
-
-export const fetchContactAsync = createAction('CONTACTS/fetchContactAsync');
-
-export const CONTACT_ACTIONS = {
-  CONTACT_GET_REQUEST: 'CONTACT_GET/Request',
-  CONTACT_GET_SUCCESS: 'CONTACT_GET/Success',
-  CONTACT_GET_FAILURE: 'CONTACT_GET/Failure',
-};
-
-export const getContact = (payload) => ({
-  type: CONTACT_ACTIONS.CONTACT_GET_REQUEST,
-  payload,
-});
-
 const initialState = {
   contacts: {},
   selectedContactId: null,
   evenCheck: false,
   isFetching: false,
   error: null,
+  query: {},
 };
 
 export const contactSlice = createSlice({
@@ -32,6 +18,14 @@ export const contactSlice = createSlice({
       error: null,
       isFetching: true,
       page: payload.page,
+    }),
+    searchContact: (state, { payload }) => ({
+      ...state,
+      error: null,
+      isFetching: true,
+      query: payload.query,
+      page: 0,
+      contacts: {},
     }),
     addContacts: (state, action) => {
       return {
@@ -58,6 +52,7 @@ export const {
   addContacts,
   selectContactId,
   evenCheckbox,
+  searchContact,
 } = contactSlice.actions;
 export const selectContacts = (state) => state.contacts;
 

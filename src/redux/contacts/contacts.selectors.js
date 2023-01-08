@@ -10,6 +10,8 @@ export default class ContactSelectors {
 
   static getEvenChecked = (state) => state.contacts.evenCheck;
 
+  static getQuery = (state) => state.contacts.query;
+
   static selectContactById = createSelector(
     [
       ContactSelectors.getContacts,
@@ -19,10 +21,21 @@ export default class ContactSelectors {
   );
 
   static getContactList = createSelector(
-    [ContactSelectors.getContacts, ContactSelectors.getEvenChecked],
-    (contacts, evenCheck) => {
-      if (!evenCheck) return contacts;
-      return filter(contacts, ({ id }) => isEvenNum(id));
+    [
+      ContactSelectors.getContacts,
+      ContactSelectors.getEvenChecked,
+      ContactSelectors.getQuery,
+    ],
+    (contacts, evenCheck, query) => {
+      let newContacts = Object.assign({}, contacts);
+      if (query.email) {
+        newContacts = filter(contacts, ({ email }) => {
+          const regexEmail = new RegExp(query.email, 'gi');
+          return email?.match(regexEmail);
+        });
+      }
+      if (!evenCheck) return newContacts;
+      return filter(newContacts, ({ id }) => isEvenNum(id));
     },
   );
 }
